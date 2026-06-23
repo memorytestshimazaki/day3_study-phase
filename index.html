@@ -58,7 +58,7 @@ const DAY = 3;
 
 let timeline = [];
 const GAS_URL =
-"https://script.google.com/macros/s/AKfycbykXLPo7yOkRlGzwbBA8leKtM4_Qqq_wF9uLB9GwVDpDaYfkJb47is2StaHIp-OLpiR/exec";
+"https://script.google.com/macros/s/AKfycbwj995Kx89a03AbUmvUfjdOJRjVGAQKiJvt1zoBC6myGpVMduFg2la6dAoUtqiO1CZy/exec";
 
 let participant_id = "";
 let study_start = "";
@@ -99,7 +99,9 @@ timeline.push({
 
         participant_id: participant_id,
 
-        day: DAY
+        day: DAY,
+
+         word_order:  word_order
 
       })
 
@@ -138,21 +140,22 @@ timeline.push({
 ------------------------ */
 
 let study_words = [
-"犯人",
-"独房",
-"疫病",
-"疑惑",
-"泥棒",
-"鉛筆",
-"人間",
-"偶然",
-"神父",
-"雇用",
-"品位",
-"生命",
-"凱旋",
-"裕福",
-"宝物"
+{id: 61, word: "犯人"},
+{id: 62, word: "独房"},
+{id: 63, word: "疫病"},
+{id: 64, word: "疑惑"},
+{id: 65, word: "泥棒"},
+{id: 66, word: "鉛筆"},
+{id: 67, word: "人間"},
+{id: 68, word: "偶然"},
+{id: 69, word: "神父"},
+{id: 70, word: "雇用"},
+{id: 71, word: "品位"},
+{id: 72, word: "生命"},
+{id: 73, word: "凱旋"},
+{id: 74, word: "裕福"},
+{id: 75, word: "宝物"}
+
 ];
 
 /* ------------------------
@@ -160,13 +163,16 @@ let study_words = [
 ------------------------ */
 
 study_words = jsPsych.randomization.shuffle(study_words);
-
+const word_order = study_words.map((item, index) => ({
+  serial_position: index + 1,
+  word_id: item.id,
+  word: item.word
+}));
 /* ------------------------
    単語提示フェーズ
 ------------------------ */
 
-study_words.forEach(function(word){
-
+study_words.forEach(function(item, index){
   /* 注視点 ＋ */
 
   timeline.push({
@@ -195,13 +201,18 @@ study_words.forEach(function(word){
     stimulus: `
       <div class="center-text"
            style="font-size:100px;">
-        ${word}
+        ${item.word}
       </div>
     `,
 
     choices: "NO_KEYS",
 
-    trial_duration: 5000
+    trial_duration: 5000,
+     data: {
+      word_id: item.id,
+      word: item.word,
+      serial_position: index + 1
+    }
 
   });
 
@@ -216,7 +227,7 @@ timeline.push({
   type: jsPsychHtmlKeyboardResponse,
 
   stimulus: `
-   <div class="center-text"
+    <div class="center-text"
          style="font-size:18px; line-height:1.8;">
       ご協力ありがとうございました。<br><br>
       <b>ブラウザの「戻る」操作を行い、<br>
